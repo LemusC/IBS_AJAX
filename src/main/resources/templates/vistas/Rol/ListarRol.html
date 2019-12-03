@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:include="/layouts/layout::plantilla">
+
+<head>
+    <title th:fragment="titulo">VISTA LISTAR ROLES</title>
+</head>
+
+<body>
+    <div class="container" th:fragment="content">
+        <div class="container">
+            <h1 class="text-center mt-5 mb-2" style="text-align: center;">LISTADO DE ROLES</h1>
+
+            <!-- Button para abrir el modal para nuevo registro-->
+            <div style="text-align: right">
+                <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#nuevo"><i
+                        class="fas fa-plus-square"></i> Nuevo</button>
+            </div>
+            <hr>
+
+            <!-- Tabla donde estaran los datos -->
+            <table class="table text-center color-table" id="table" style="text-align: center; width: 100%">
+                <thead style="color: black;">
+                    <tr>
+                        <th>Id</th>
+                        <th>Rol</th>
+                        <th>Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tdatos">
+
+                </tbody>
+            </table>
+        </div>
+
+        <section th:insert="~{componentes/assets :: jsAll}"></section>
+        
+        <script>
+            $(document).ready(inicio);
+
+            let rol = {
+                id: 0
+            };
+
+            function setIdRol(id) {
+                rol.id = id;
+            }
+
+            function inicio() {
+                cargarDatos();
+            }
+
+            function cargarDatos() {
+                $.ajax({
+                    url: "/rol/all",
+                    method: "Get",
+                    data: null,
+                    success: function (response) {
+
+                        $("#tdatos").html("");
+
+                        response.forEach(i => {
+                            $("#tdatos").append(
+                                "<tr>" +
+                                "<td>" + i.idRol + "</td>" +
+                                "<td>" + i.nombreRol + "</td>" +
+                                "<td>" +
+                                "<button onclick='cargarRegistro(" + i.idRol +
+                                ")' type='button' class='btn btn-warning ml-3 mt-1' data-toggle='modal' data-target='#editar'><i class = 'fas fa-edit'>< /i> Editar</button > " +
+                                "<button onclick='setIdRol(" + i.idRol +
+                                ");' type='button' class='btn btn-danger ml-3 mt-1' data-toggle='modal' data-target='#eliminar'><i class = 'fas fa-trash-alt'></i> Eliminar</button > " +
+                                "</td>" +
+                                "</tr>"
+                            );
+                        });
+                    },
+                    error: function () {
+                        alert("Error");
+                    }
+                });
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>
